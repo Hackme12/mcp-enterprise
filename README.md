@@ -1,46 +1,230 @@
-# Getting Started with Create React App
+# MCP Enterprise
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A comprehensive Model Context Protocol (MCP) application built for enterprise use with React, TypeScript, and Google's Gemini AI. This application provides a sophisticated interface for managing and interacting with multiple MCP servers through an AI-powered chat interface.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+### Enterprise-Grade UI
+- **Glass Morphism Design**: Modern, sophisticated interface with soft glass effects
+- **Responsive Layout**: Optimized for desktop and mobile enterprise environments
+- **Advanced Animations**: Smooth transitions and micro-interactions using Framer Motion
+- **Dark Theme**: Professional dark theme optimized for extended use
 
-### `npm start`
+### MCP Integration
+- **Multi-Server Support**: Connect to multiple MCP servers simultaneously
+- **Universal Compatibility**: Support for Node.js, Python, Java JAR, and Docker-based servers
+- **Real-time Status**: Live connection status and health monitoring
+- **Tool Discovery**: Automatic discovery and cataloging of available tools
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### AI-Powered Chat
+- **Gemini Integration**: Powered by Google's Gemini AI for intelligent interactions
+- **Context Awareness**: AI understands and utilizes all connected MCP tools
+- **Enterprise Security**: Secure API key management and encrypted communications
+- **Performance Metrics**: Real-time processing time and usage analytics
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Enterprise Benefits
+- **Scalability**: Designed to handle multiple servers and high-volume interactions
+- **Security**: Enterprise-grade security practices and data protection
+- **Monitoring**: Comprehensive logging and performance monitoring
+- **Flexibility**: Support for various server types and deployment scenarios
 
-### `npm test`
+## 🛠️ Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend Setup
 
-### `npm run build`
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd mcp-enterprise
+   ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your Gemini API key and backend URL
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+4. **Start the frontend**
+   ```bash
+   npm start
+   ```
 
-### `npm run eject`
+### Backend Setup
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. **Navigate to backend directory**
+   ```bash
+   cd ../gemini-mcp
+   ```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **Install backend dependencies**
+   ```bash
+   npm install
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+3. **Set up backend environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+4. **Start the backend server**
+   ```bash
+   npm start
+   ```
 
-## Learn More
+## 📋 Usage
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Setting Up Your First MCP Server
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. **Get a Gemini API Key**
+   - Visit [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - Create a new API key
+   - Enter it in the application setup screen
+
+2. **Add an MCP Server**
+   - Click "Add Server" in the dashboard
+   - Choose your server type (Node.js, Python, Java, Docker)
+   - Provide the server name and path
+   - Click "Add Server"
+
+3. **Connect and Chat**
+   - Click "Connect" on your server card
+   - Switch to the "Chat" tab
+   - Start interacting with your MCP tools through AI
+
+### Using External MCP Servers
+
+This application is designed to connect to external MCP servers that you provide. You can connect to any MCP-compatible server by:
+
+1. Having your MCP server running externally
+2. Adding the server configuration in the application
+3. Connecting and interacting through the AI chat interface
+
+The application supports various server types and will automatically discover available tools from your connected servers.
+
+## 🏗️ Architecture
+
+### Hybrid Architecture
+The application uses a hybrid architecture with separate frontend and backend:
+
+**Frontend (React)**: `/mcp-enterprise/`
+```
+src/
+├── components/          # Reusable UI components
+│   ├── ServerCard.tsx   # Server management card
+│   ├── AddServerModal.tsx # Server addition modal
+│   └── ChatInterface.tsx # AI chat interface
+├── pages/              # Main application pages
+│   └── Dashboard.tsx   # Primary dashboard
+├── services/           # API communication services
+│   └── MCPService.ts   # HTTP API client
+├── store/              # Redux state management
+│   ├── index.ts        # Store configuration
+│   └── mcpSlice.ts     # MCP state slice
+├── types/              # TypeScript definitions
+│   └── mcp.ts          # MCP-related types
+└── App.tsx             # Main application component
+```
+
+**Backend (Node.js)**: `/gemini-mcp/`
+```
+├── server.js           # Express server with MCP SDK integration
+├── package.json        # Backend dependencies
+└── .env.example        # Environment configuration
+```
+
+### Key Technologies
+- **Frontend**: React 18, TypeScript, Redux Toolkit, Tailwind CSS, Framer Motion
+- **Backend**: Node.js, Express, MCP SDK, Google Generative AI
+- **Communication**: REST API between frontend and backend
+
+## 🔧 Configuration
+
+### Server Types
+
+**Node.js Servers**
+- Path: `/path/to/server.js`
+- Execution: `node /path/to/server.js`
+
+**Python Servers**
+- Path: `/path/to/server.py`
+- Execution: `python3 /path/to/server.py`
+
+**Java Servers**
+- Path: `/path/to/server.jar`
+- Execution: `java -jar /path/to/server.jar`
+
+**Docker Servers**
+- Path: `docker:image-name`
+- Execution: `docker run -i image-name`
+
+### Environment Variables
+
+**Frontend (.env)**:
+```bash
+REACT_APP_GEMINI_API_KEY=your_gemini_api_key_here
+REACT_APP_API_URL=http://localhost:3001/api
+```
+
+**Backend (.env)**:
+```bash
+PORT=3001
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+## 🚀 Enterprise Deployment
+
+### Production Build
+```bash
+npm run build
+```
+
+### Docker Deployment
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY build ./build
+EXPOSE 3000
+CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+```
+
+### Security Considerations
+- API keys are stored securely in environment variables
+- All communications use HTTPS in production
+- Input validation and sanitization on all user inputs
+- Regular security audits and dependency updates
+
+## 📊 Monitoring and Analytics
+
+The application provides comprehensive monitoring:
+- **Connection Status**: Real-time server health monitoring
+- **Performance Metrics**: Response times and processing statistics
+- **Usage Analytics**: Tool usage patterns and frequency
+- **Error Tracking**: Comprehensive error logging and reporting
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🔗 Resources
+
+- [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
+- [Google Gemini AI Documentation](https://ai.google.dev/)
+- [MCP SDK Documentation](https://github.com/modelcontextprotocol/sdk)
+- [React Documentation](https://react.dev/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/)

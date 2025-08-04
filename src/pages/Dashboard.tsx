@@ -39,15 +39,48 @@ export const Dashboard: React.FC = () => {
   );
 
   useEffect(() => {
-    if (geminiApiKey && !mcpService) {
+    const initializeService = async () => {
       try {
-        const service = new MCPService(geminiApiKey);
+        const service = new MCPService();
         setMcpService(service);
+        
+        // Auto-connect to available servers
+        const availableServers = service.getAvailableServers();
+        for (const server of availableServers) {
+          try {
+            const tools = await service.connectToServer(server);
+            const newServer: MCPServer = {
+              id: server.name,
+              name: server.name,
+              path: server.path,
+              type: server.type as MCPServer['type'],
+              status: 'connected',
+              tools,
+              lastConnected: new Date(),
+            };
+            dispatch(addServer(newServer));
+            
+            dispatch(
+              addMessage({
+                id: `msg-${Date.now()}-${server.name}`,
+                type: 'system',
+                content: `Auto-connected to ${server.name}. ${tools.length} tools available: ${tools.map((t) => t.name).join(', ')}`,
+                timestamp: new Date(),
+              })
+            );
+          } catch (error) {
+            console.error(`Failed to auto-connect to ${server.name}:`, error);
+          }
+        }
       } catch (error) {
-        console.error("Failed to initialize MCP service:", error);
+        console.error('Failed to initialize MCP service:', error);
       }
+    };
+    
+    if (!mcpService && servers.length === 0) {
+      initializeService();
     }
-  }, [geminiApiKey, mcpService]);
+  }, [mcpService, servers.length, dispatch]);
 
   const handleSetApiKey = () => {
     if (apiKeyInput.trim()) {
@@ -71,13 +104,14 @@ export const Dashboard: React.FC = () => {
   const handleConnectServer = async (serverId: string) => {
     if (!mcpService) return;
 
-    const server = servers.find((s) => s.id === serverId);
-    if (!server) return;
-
     dispatch(updateServer({ id: serverId, updates: { status: "connecting" } }));
 
     try {
-      const tools = await mcpService.connectToServer(server);
+      const server = servers.find(s => s.id === serverId);
+      if (!server) return;
+      
+      const serverConfig = { name: server.name, type: server.type, path: server.path };
+      const tools = await mcpService.connectToServer(serverConfig);
       dispatch(
         updateServer({
           id: serverId,
@@ -94,7 +128,7 @@ export const Dashboard: React.FC = () => {
         addMessage({
           id: `msg-${Date.now()}`,
           type: "system",
-          content: `Connected to ${server.name}. ${
+          content: `Connected to ${serverId}. ${
             tools.length
           } tools available: ${tools.map((t) => t.name).join(", ")}`,
           timestamp: new Date(),
@@ -262,37 +296,18 @@ export const Dashboard: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* API Key Setup */}
-        {!geminiApiKey && (
+        {/* Auto-connection status */}
+        {mcpService && servers.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="glass-card p-6 mb-6 border-primary-400/30"
+            className="glass-card p-4 mb-6 border-green-400/30"
           >
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
-              <Settings className="w-6 h-6 mr-2" />
-              Setup Required
-            </h2>
-            <p className="text-gray-300 mb-4">
-              Enter your Google Gemini API key to enable AI-powered MCP
-              interactions.
-            </p>
-            <div className="flex space-x-4">
-              <input
-                type="password"
-                value={apiKeyInput}
-                onChange={(e) => setApiKeyInput(e.target.value)}
-                placeholder="Enter your Gemini API key..."
-                className="flex-1 glass-input"
-                onKeyDown={(e) => e.key === "Enter" && handleSetApiKey()}
-              />
-              <button
-                onClick={handleSetApiKey}
-                disabled={!apiKeyInput.trim()}
-                className="bg-gradient-to-r from-primary-500 to-purple-500 hover:from-primary-600 hover:to-purple-600 disabled:from-gray-500 disabled:to-gray-600 text-white px-6 py-2 rounded-lg font-medium transition-all duration-200 disabled:opacity-50"
-              >
-                Set API Key
-              </button>
+            <div className="flex items-center space-x-2">
+              <div className="status-indicator status-connected"></div>
+              <span className="text-green-400 font-medium">
+                Auto-connected to {connectedServers.length} server{connectedServers.length !== 1 ? 's' : ''}
+              </span>
             </div>
           </motion.div>
         )}

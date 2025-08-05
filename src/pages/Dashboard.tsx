@@ -37,18 +37,33 @@ export const Dashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"servers" | "chat" | "settings">(
     "servers"
   );
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+    
     const initializeService = async () => {
+      if (initialized || servers.length > 0) return;
+      
       try {
+        setInitialized(true);
         const service = new MCPService();
+        if (!isMounted) return;
         setMcpService(service);
         
         // Auto-connect to available servers
         const availableServers = service.getAvailableServers();
         for (const server of availableServers) {
+          if (!isMounted) break;
+          
+          // Check if server already exists
+          const existingServer = servers.find(s => s.id === server.name);
+          if (existingServer) continue;
+          
           try {
             const tools = await service.connectToServer(server);
+            if (!isMounted) break;
+            
             const newServer: MCPServer = {
               id: server.name,
               name: server.name,
@@ -77,10 +92,12 @@ export const Dashboard: React.FC = () => {
       }
     };
     
-    if (!mcpService && servers.length === 0) {
-      initializeService();
-    }
-  }, [mcpService, servers.length, dispatch]);
+    initializeService();
+    
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSetApiKey = () => {
     if (apiKeyInput.trim()) {

@@ -26,7 +26,11 @@ const mcpSlice = createSlice({
   initialState,
   reducers: {
     addServer: (state, action: PayloadAction<MCPServer>) => {
-      state.servers.push(action.payload);
+      // Prevent duplicate servers
+      const existingServer = state.servers.find(s => s.id === action.payload.id);
+      if (!existingServer) {
+        state.servers.push(action.payload);
+      }
     },
     updateServer: (state, action: PayloadAction<{ id: string; updates: Partial<MCPServer> }>) => {
       const server = state.servers.find(s => s.id === action.payload.id);

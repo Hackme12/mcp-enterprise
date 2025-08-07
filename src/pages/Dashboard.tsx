@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion } from "framer-motion";
 import {
@@ -38,32 +38,27 @@ export const Dashboard: React.FC = () => {
     "servers"
   );
   const [initialized, setInitialized] = useState(false);
+  const initializationRef = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
-
     const initializeService = async () => {
-      if (initialized || servers.length > 0) return;
-
+      // Prevent double initialization in React StrictMode
+      if (initializationRef.current) return;
+      initializationRef.current = true;
+      
       try {
-        setInitialized(true);
         const service = new MCPService();
-        if (!isMounted) return;
         setMcpService(service);
-
+        
         // Auto-connect to available servers
         const availableServers = service.getAvailableServers();
+        console.log('Available servers:', availableServers);
+        
         for (const server of availableServers) {
-          if (!isMounted) break;
-
-          // Check if server already exists
-          const existingServer = servers.find((s) => s.id === server.name);
-          if (existingServer) continue;
-
           try {
+            console.log(`Connecting to ${server.name}...`);
             const tools = await service.connectToServer(server);
-            if (!isMounted) break;
-
+            
             const newServer: MCPServer = {
               id: server.name,
               name: server.name,
@@ -74,7 +69,7 @@ export const Dashboard: React.FC = () => {
               lastConnected: new Date(),
             };
             dispatch(addServer(newServer));
-
+            
             dispatch(
               addMessage({
                 id: `msg-${Date.now()}-${server.name}`,
@@ -93,13 +88,9 @@ export const Dashboard: React.FC = () => {
         console.error("Failed to initialize MCP service:", error);
       }
     };
-
+    
     initializeService();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [dispatch]);
 
   const handleSetApiKey = () => {
     if (apiKeyInput.trim()) {
@@ -263,7 +254,7 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-4xl font-bold gradient-text mb-2">
-                MOdel Context Protocal Client
+                Model Context Protocal Client
               </h1>
               {/* <p className="text-gray-400">
                 Model Context Protocol - Enterprise AI Integration Platform
@@ -444,7 +435,7 @@ export const Dashboard: React.FC = () => {
           )}
 
           {activeTab === "chat" && (
-            <div className="lg:col-span-3 h-[600px]">
+            <div className="lg:col-span-3 h-[600px] mt-16">
               <ChatInterface
                 messages={messages}
                 isProcessing={isProcessing}

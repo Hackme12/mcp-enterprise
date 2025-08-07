@@ -49,7 +49,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
       case "user":
         return "bg-primary-500/20 border-primary-400/30 ml-12";
       case "assistant":
-        return "bg-purple-500/20 border-purple-400/30 mr-12";
+        return "bg-primary-500/20 border-purple-400/30 mr-12";
       case "tool":
         return "bg-green-500/20 border-green-400/30 mx-8";
       case "system":
@@ -64,7 +64,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse-soft"></div>
-            <span className="text-lg font-semibold">MCP Enterprise Chat</span>
+            <span className="text-lg font-semibold">Chat</span>
           </div>
           <div className="text-sm text-gray-400">
             {connectedServers} server{connectedServers !== 1 ? "s" : ""}{" "}
@@ -101,7 +101,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-2">
                     <span className="font-medium capitalize">
-                      {message.type === "assistant" ? "Gemini" : message.type}
+                      {message.type === "assistant"
+                        ? "Bedrock - Nova"
+                        : message.type}
                     </span>
                     {message.toolName && (
                       <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
@@ -145,7 +147,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               </div>
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className="font-medium">Gemini</span>
+                  <span className="font-medium">AWS Bedrock</span>
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
                     <div

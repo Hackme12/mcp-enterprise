@@ -1,19 +1,21 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MCPServer, ChatMessage, AppState } from '../types/mcp';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { MCPServer, ChatMessage, AppState } from "../types/mcp";
 
 const initialState: AppState = {
   servers: [],
   activeServerId: null,
-  messages: [{
-    id: '1',
-    type: 'system',
-    content: 'Welcome to MCP Enterprise. Connect to your Model Context Protocol servers to get started.',
-    timestamp: new Date(),
-  }],
+  messages: [
+    {
+      id: "1",
+      type: "system",
+      content: "",
+      timestamp: new Date(),
+    },
+  ],
   isProcessing: false,
-  geminiApiKey: '',
+  geminiApiKey: "",
   settings: {
-    theme: 'dark',
+    theme: "dark",
     autoConnect: false,
     showSystemMessages: true,
     maxTokens: 4096,
@@ -22,24 +24,29 @@ const initialState: AppState = {
 };
 
 const mcpSlice = createSlice({
-  name: 'mcp',
+  name: "mcp",
   initialState,
   reducers: {
     addServer: (state, action: PayloadAction<MCPServer>) => {
       // Prevent duplicate servers
-      const existingServer = state.servers.find(s => s.id === action.payload.id);
+      const existingServer = state.servers.find(
+        (s) => s.id === action.payload.id
+      );
       if (!existingServer) {
         state.servers.push(action.payload);
       }
     },
-    updateServer: (state, action: PayloadAction<{ id: string; updates: Partial<MCPServer> }>) => {
-      const server = state.servers.find(s => s.id === action.payload.id);
+    updateServer: (
+      state,
+      action: PayloadAction<{ id: string; updates: Partial<MCPServer> }>
+    ) => {
+      const server = state.servers.find((s) => s.id === action.payload.id);
       if (server) {
         Object.assign(server, action.payload.updates);
       }
     },
     removeServer: (state, action: PayloadAction<string>) => {
-      state.servers = state.servers.filter(s => s.id !== action.payload);
+      state.servers = state.servers.filter((s) => s.id !== action.payload);
       if (state.activeServerId === action.payload) {
         state.activeServerId = null;
       }
@@ -59,7 +66,10 @@ const mcpSlice = createSlice({
     setGeminiApiKey: (state, action: PayloadAction<string>) => {
       state.geminiApiKey = action.payload;
     },
-    updateSettings: (state, action: PayloadAction<Partial<AppState['settings']>>) => {
+    updateSettings: (
+      state,
+      action: PayloadAction<Partial<AppState["settings"]>>
+    ) => {
       Object.assign(state.settings, action.payload);
     },
   },

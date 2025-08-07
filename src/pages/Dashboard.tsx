@@ -41,45 +41,47 @@ export const Dashboard: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const initializeService = async () => {
       if (initialized || servers.length > 0) return;
-      
+
       try {
         setInitialized(true);
         const service = new MCPService();
         if (!isMounted) return;
         setMcpService(service);
-        
+
         // Auto-connect to available servers
         const availableServers = service.getAvailableServers();
         for (const server of availableServers) {
           if (!isMounted) break;
-          
+
           // Check if server already exists
-          const existingServer = servers.find(s => s.id === server.name);
+          const existingServer = servers.find((s) => s.id === server.name);
           if (existingServer) continue;
-          
+
           try {
             const tools = await service.connectToServer(server);
             if (!isMounted) break;
-            
+
             const newServer: MCPServer = {
               id: server.name,
               name: server.name,
               path: server.path,
-              type: server.type as MCPServer['type'],
-              status: 'connected',
+              type: server.type as MCPServer["type"],
+              status: "connected",
               tools,
               lastConnected: new Date(),
             };
             dispatch(addServer(newServer));
-            
+
             dispatch(
               addMessage({
                 id: `msg-${Date.now()}-${server.name}`,
-                type: 'system',
-                content: `Auto-connected to ${server.name}. ${tools.length} tools available: ${tools.map((t) => t.name).join(', ')}`,
+                type: "system",
+                content: `Auto-connected to ${server.name}. ${
+                  tools.length
+                } tools available: ${tools.map((t) => t.name).join(", ")}`,
                 timestamp: new Date(),
               })
             );
@@ -88,12 +90,12 @@ export const Dashboard: React.FC = () => {
           }
         }
       } catch (error) {
-        console.error('Failed to initialize MCP service:', error);
+        console.error("Failed to initialize MCP service:", error);
       }
     };
-    
+
     initializeService();
-    
+
     return () => {
       isMounted = false;
     };
@@ -124,10 +126,14 @@ export const Dashboard: React.FC = () => {
     dispatch(updateServer({ id: serverId, updates: { status: "connecting" } }));
 
     try {
-      const server = servers.find(s => s.id === serverId);
+      const server = servers.find((s) => s.id === serverId);
       if (!server) return;
-      
-      const serverConfig = { name: server.name, type: server.type, path: server.path };
+
+      const serverConfig = {
+        name: server.name,
+        type: server.type,
+        path: server.path,
+      };
       const tools = await mcpService.connectToServer(serverConfig);
       dispatch(
         updateServer({
@@ -257,21 +263,21 @@ export const Dashboard: React.FC = () => {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-4xl font-bold gradient-text mb-2">
-                MCP Enterprise
+                MOdel Context Protocal Client
               </h1>
-              <p className="text-gray-400">
+              {/* <p className="text-gray-400">
                 Model Context Protocol - Enterprise AI Integration Platform
-              </p>
+              </p> */}
             </div>
             <div className="flex items-center space-x-4">
               <div className="glass-card p-4 flex items-center space-x-4">
-                <div className="text-center">
+                {/* <div className="text-center">
                   <div className="text-2xl font-bold text-primary-400">
                     {servers.length}
                   </div>
                   <div className="text-xs text-gray-400">Servers</div>
-                </div>
-                <div className="text-center">
+                </div> */}
+                {/* <div className="text-center">
                   <div className="text-2xl font-bold text-green-400">
                     {connectedServers.length}
                   </div>
@@ -282,13 +288,13 @@ export const Dashboard: React.FC = () => {
                     {totalTools}
                   </div>
                   <div className="text-xs text-gray-400">Tools</div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
 
           {/* Enterprise Benefits */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="glass-card p-4 flex items-center space-x-3">
               <Shield className="w-8 h-8 text-green-400" />
               <div>
@@ -310,7 +316,7 @@ export const Dashboard: React.FC = () => {
                 <p className="text-sm text-gray-400">Universal compatibility</p>
               </div>
             </div>
-          </div>
+          </div> */}
         </motion.div>
 
         {/* Auto-connection status */}
@@ -323,7 +329,8 @@ export const Dashboard: React.FC = () => {
             <div className="flex items-center space-x-2">
               <div className="status-indicator status-connected"></div>
               <span className="text-green-400 font-medium">
-                Auto-connected to {connectedServers.length} server{connectedServers.length !== 1 ? 's' : ''}
+                Auto-connected to {connectedServers.length} server
+                {connectedServers.length !== 1 ? "s" : ""}
               </span>
             </div>
           </motion.div>
@@ -335,7 +342,7 @@ export const Dashboard: React.FC = () => {
             {[
               { id: "servers", label: "Servers", icon: Server },
               { id: "chat", label: "Chat", icon: MessageSquare },
-              { id: "settings", label: "Settings", icon: Settings },
+              // { id: "settings", label: "Settings", icon: Settings },
             ].map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
@@ -404,7 +411,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* Quick Stats */}
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 <div className="glass-card p-6">
                   <h3 className="text-lg font-semibold mb-4">
                     System Overview
@@ -432,7 +439,7 @@ export const Dashboard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </>
           )}
 
